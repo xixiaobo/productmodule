@@ -57,7 +57,7 @@ public class ViewsController {
 	
 	@RequestMapping(value = "/views_delete/{uuid}", method = RequestMethod.DELETE)
 	@Timed
-	@PreAuthorize("@InterfacePermissions.hasPermission(authentication, 'productmodule/api/views_delete')")
+	@PreAuthorize("@InterfacePermissions.hasPermission(authentication, 'productmodule/api/views_delete/{uuid}')")
 	@ApiOperation(value = "删除视图", notes = "传入视图的id，删除此视图", httpMethod = "DELETE")
 	public ResponseEntity<Map<String, Object>> views_delete(@PathVariable String uuid) {
 		Map<String, Object> map=new HashMap<String, Object>();

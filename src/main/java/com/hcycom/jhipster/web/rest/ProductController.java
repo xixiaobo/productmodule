@@ -58,7 +58,7 @@ public class ProductController {
 	
 	@RequestMapping(value = "/product_delete/{uuid}", method = RequestMethod.DELETE)
 	@Timed
-	@PreAuthorize("@InterfacePermissions.hasPermission(authentication, 'productmodule/api/product_delete')")
+	@PreAuthorize("@InterfacePermissions.hasPermission(authentication, 'productmodule/api/product_delete/{uuid}')")
 	@ApiOperation(value = "删除产品", notes = "传入产品的id，删除此产品", httpMethod = "DELETE")
 	public ResponseEntity<Map<String, Object>> product_delete(@PathVariable String uuid) {
 		Map<String, Object> map=new HashMap<String, Object>();
