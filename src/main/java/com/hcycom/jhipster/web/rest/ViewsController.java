@@ -34,7 +34,7 @@ public class ViewsController {
 	
 	@RequestMapping(value = "/views", method = RequestMethod.POST)
 	@Timed
-	@PreAuthorize("@InterfacePermissions.hasPermission(authentication, 'productmodule/api/views')")
+	@PreAuthorize("@InterfacePermissions.hasPermission(authentication, 'productmodule/api/views--POST')")
 	@ApiOperation(value = "创建视图", notes = "传入视图表参数，创建视图", httpMethod = "POST")
 	public ResponseEntity<Map<String, Object>> views(@RequestBody Views views) {
 		Map<String, Object> map=new HashMap<String, Object>();
@@ -57,7 +57,7 @@ public class ViewsController {
 	
 	@RequestMapping(value = "/views_delete/{uuid}", method = RequestMethod.DELETE)
 	@Timed
-	@PreAuthorize("@InterfacePermissions.hasPermission(authentication, 'productmodule/api/views_delete/{uuid}')")
+	@PreAuthorize("@InterfacePermissions.hasPermission(authentication, 'productmodule/api/views_delete/{uuid}--DELETE')")
 	@ApiOperation(value = "删除视图", notes = "传入视图的id，删除此视图", httpMethod = "DELETE")
 	public ResponseEntity<Map<String, Object>> views_delete(@PathVariable String uuid) {
 		Map<String, Object> map=new HashMap<String, Object>();
@@ -79,7 +79,7 @@ public class ViewsController {
 	
 	@DeleteMapping("/views_deleteByMore")
 	@Timed
-	@PreAuthorize("@InterfacePermissions.hasPermission(authentication, 'productmodule/api/views_deleteByMore')")
+	@PreAuthorize("@InterfacePermissions.hasPermission(authentication, 'productmodule/api/views_deleteByMore--DELETE')")
 	@ApiOperation(value = "删除多个视图", httpMethod = "DELETE", notes = "删除多个视图根据uuid数组")
 	@ApiParam(name = "ids", value = "参数类型为String[],为视图uuid的数组", required = true)
 	public ResponseEntity<Map<String, Object>> views_deleteByMore(@RequestBody String[] uuids) {
@@ -96,7 +96,7 @@ public class ViewsController {
 	
 	@RequestMapping(value = "/views_put", method = RequestMethod.PUT)
 	@Timed
-	@PreAuthorize("@InterfacePermissions.hasPermission(authentication, 'productmodule/api/views_put')")
+	@PreAuthorize("@InterfacePermissions.hasPermission(authentication, 'productmodule/api/views_put--PUT')")
 	@ApiOperation(value = "修改视图", notes = "传入视图表参数，根据id修改视图", httpMethod = "PUT")
 	public ResponseEntity<Map<String, Object>> views_put(@RequestBody Views views) {
 		Map<String, Object> map=new HashMap<String, Object>();
@@ -118,7 +118,7 @@ public class ViewsController {
 	
 	@RequestMapping(value = "/views_get/{uuid}", method = RequestMethod.GET)
 	@Timed
-	@PreAuthorize("@InterfacePermissions.hasPermission(authentication, 'productmodule/api/views_get/{uuid}')")
+	@PreAuthorize("@InterfacePermissions.hasPermission(authentication, 'productmodule/api/views_get/{uuid}--GET')")
 	@ApiOperation(value = "获取视图详情", notes = "根据id获取视图详情", httpMethod = "GET")
 	public ResponseEntity<Map<String, Object>> views_get(@PathVariable String uuid) {
 		Map<String, Object> map=new HashMap<String, Object>();
@@ -141,7 +141,7 @@ public class ViewsController {
 	
 	@RequestMapping(value = "/views_getAll", method = RequestMethod.GET)
 	@Timed
-	@PreAuthorize("@InterfacePermissions.hasPermission(authentication, 'productmodule/api/views_getAll')")
+	@PreAuthorize("@InterfacePermissions.hasPermission(authentication, 'productmodule/api/views_getAll--GET')")
 	@ApiOperation(value = "获取所有视图", notes = "获取所有视图详情", httpMethod = "GET")
 	public ResponseEntity<Map<String, Object>> views_getAll() {
 		Map<String, Object> map=new HashMap<String, Object>();

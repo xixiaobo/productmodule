@@ -9,6 +9,7 @@ import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
 
+import com.hcycom.jhipster.domain.Product;
 import com.hcycom.jhipster.domain.Views;
 
 @Mapper
@@ -24,9 +25,24 @@ public interface ViewsMapper {
 			+ "#{views.views_super},#{views.views_icon}"
 			+ ",#{views.views_level})")
 	public int addViews(@Param("views") Views views);
+	
+	
 
 	/**
-	 * 修改产品信息
+	 * 添加视图权限
+	 * 
+	 * @param product
+	 * @return
+	 */
+	@Insert("INSERT INTO authority(authority_name,authority_type,foreign_uuid,auhority_status) VALUES "
+			+ "(#{views.views_name_cn},2,"
+			+ "#{views.uuid},1)")
+	public int addViewsAuthority(@Param("views") Views views);
+	
+	
+
+	/**
+	 * 修改视图信息
 	 * 
 	 * @param role
 	 * @return
@@ -38,6 +54,16 @@ public interface ViewsMapper {
 			+ "views_level = #{views.views_level}"
 			+ "where uuid = #{views.uuid}")
 	public int updateViews(@Param("views") Views views);
+	
+	/**
+	 * 修改视图权限信息
+	 * 
+	 * @param role
+	 * @return
+	 */
+	@Update("update authority set authority_name =  #{views.views_name_cn}"
+			+ "where authority_type=2 and foreign_uuid = #{views.uuid}")
+	public int updateViewsAuthority(@Param("views") Views views);
 
 	/**
 	 * 根据uuid删除产品信息
@@ -47,6 +73,15 @@ public interface ViewsMapper {
 	 */
 	@Delete("delete from views where uuid=#{views.uuid}")
 	public int deleteViews(@Param("views") Views views);
+	
+	/**
+	 * 根据视图uuid删除产品权限
+	 * 
+	 * @param role
+	 * @return
+	 */
+	@Delete("delete from authority where foreign_uuid=#{views.uuid}")
+	public int deleteViewsAuthorty(@Param("views") Views views);
 
 	/**
 	 * 根据uuid查询产品信息
@@ -62,5 +97,10 @@ public interface ViewsMapper {
 	 */
 	@Select("SELECT * FROM views")
 	public List<Views> getAllViews();
+
+	@Select("select * FROM product where uuid in "
+			+ "(select foreign_uuid from authority where authority_type='2' and uuid in "
+			+ "(select authority_uuid from role_authority where role_uuid=#{roleid}))")
+	public List<Views> getAllViewsByRole(int roleid);
 
 }
