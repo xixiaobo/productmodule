@@ -20,20 +20,19 @@ public interface ProductMapper {
 	 * @param product
 	 * @return
 	 */
-	@Insert("INSERT INTO product(uuid,product_name,product_desc,product_status,product_icon) VALUES "
+	@Insert("INSERT INTO product(uuid,product_name,product_desc,product_status,product_icon,product_order) VALUES "
 			+ "(#{product.uuid},#{product.product_name},#{product.product_desc},"
-			+ "#{product.product_status},#{product.product_icon})")
+			+ "#{product.product_status},#{product.product_icon},#{product.product_order})")
 	public int addProduct(@Param("product") Product product);
-	
+
 	/**
 	 * 添加产品权限
 	 * 
 	 * @param product
 	 * @return
 	 */
-	@Insert("INSERT INTO authority(authority_name,authority_type,foreign_uuid,auhority_status) VALUES "
-			+ "(#{product.product_name},1,"
-			+ "#{product.uuid},#{product.product_status})")
+	@Insert("INSERT INTO authority(uuid,authority_name,authority_type,foreign_uuid,authority_status) VALUES "
+			+ "(#{product.uuid},#{product.product_name},1,#{product.uuid},#{product.product_status})")
 	public int addProductAuthority(@Param("product") Product product);
 
 	/**
@@ -42,21 +41,24 @@ public interface ProductMapper {
 	 * @param role
 	 * @return
 	 */
-	@Update("update product set product_name = #{product.product_name} ,product_desc = #{product.product_desc} ,"
-			+ "product_status = #{product.product_status} ,product_icon = #{product.product_icon} "
-			+ "where uuid = #{product.uuid}")
+	@Update("UPDATE authority LEFT JOIN product " + "ON authority.foreign_uuid = product.uuid "
+			+ "SET product.product_name = #{product.product_name},  "
+			+ "product.product_desc = #{product.product_desc}, "
+			+ "product.product_status = #{product.product_status}, "
+			+ "product.product_icon = #{product.product_icon}, "
+			+ "authority.authority_name = #{product.product_name}, "
+			+ "authority.authority_status = #{product.product_status}  WHERE product.uuid=#{product.uuid}")
 	public int updateProduct(@Param("product") Product product);
+
+	@Update("UPDATE authority LEFT JOIN product ON authority.foreign_uuid = product.uuid "
+			+ "SET product.product_status = #{product.product_status}, "
+			+ "authority.authority_status = #{product.product_status} WHERE product.uuid=#{product.uuid}")
+	public int updateProductActivation(@Param("product") Product product);
 	
-	/**
-	 * 修改产品权限信息
-	 * 
-	 * @param role
-	 * @return
-	 */
-	@Update("update authority set authority_name = #{product.product_name} ,"
-			+ "auhority_status = #{product.product_status}  "
-			+ "where authority_type=1 and foreign_uuid = #{product.uuid}")
-	public int updateProductAuthority(@Param("product") Product product);
+	@Update("UPDATE product "
+			+ "SET product_order = #{product.product_order}, "
+			+ " WHERE uuid=#{product.uuid}")
+	public int updateProductOrder(@Param("product") Product product);
 
 	/**
 	 * 根据uuid删除产品信息
@@ -64,17 +66,10 @@ public interface ProductMapper {
 	 * @param role
 	 * @return
 	 */
-	@Delete("delete from product where uuid=#{product.uuid}")
+	@Delete("DELETE  p,a,r FROM product p LEFT JOIN authority a ON a.foreign_uuid = p.uuid "
+			+ "LEFT JOIN role_authority r ON a.uuid = r.authority_uuid "
+			+ "WHERE p.uuid=#{product.uuid}")
 	public int deleteProduct(@Param("product") Product product);
-	
-	/**
-	 * 根据产品uuid删除产品权限
-	 * 
-	 * @param role
-	 * @return
-	 */
-	@Delete("delete authority,role_authority from where authority left join role_authority foreign_uuid=#{product.uuid}")
-	public int deleteProductAuthorty(@Param("product") Product product);
 
 	/**
 	 * 根据uuid查询产品信息
@@ -94,7 +89,8 @@ public interface ProductMapper {
 	public List<Product> getAllProduct();
 
 	/**
-	 * 根据角色id删除角色拥有的权限
+	 * 根据角色id查询角色拥有的权限
+	 * 
 	 * @param roleid
 	 * @return
 	 */
@@ -102,5 +98,14 @@ public interface ProductMapper {
 			+ "(select foreign_uuid from authority where authority_type='1' and uuid in "
 			+ "(select authority_uuid from role_authority where role_uuid=#{roleid}))")
 	public List<Product> getAllProductByRole(@Param("roleid") int roleid);
+
+	/**
+	 * 模糊查询产品
+	 * 
+	 * @param product_name
+	 * @return
+	 */
+	@Select("SELECT * FROM product where product_name COLLATE utf8_general_ci like #{product_name}")
+	public List<Product> getAllProductByLike(@Param("product_name")String product_name);
 
 }

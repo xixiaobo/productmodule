@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.codahale.metrics.annotation.Timed;
@@ -42,12 +43,13 @@ public class ProductController {
 		product.setUuid(uuid);
 		int i = productMapper.addProduct(product);
 		if (i > 0) {
+			productMapper.addProductAuthority(product);
 			map.put("data", product);
 			map.put("msg", "产品添加成功！");
-			map.put("error_code", 0);
+			map.put("error_code", 1);
 		} else if (i == 0) {
 			map.put("msg", "产品添加失败！");
-			map.put("error_code", 1);
+			map.put("error_code", 0);
 		} else {
 			map.put("msg", "服务器错误！");
 			map.put("error_code", 2);
@@ -66,10 +68,10 @@ public class ProductController {
 		int i = productMapper.deleteProduct(product);
 		if (i > 0) {
 			map.put("msg", "产品删除成功！");
-			map.put("error_code", 0);
+			map.put("error_code", 1);
 		} else if (i == 0) {
 			map.put("msg", "产品删除失败！");
-			map.put("error_code", 1);
+			map.put("error_code", 0);
 		} else {
 			map.put("msg", "服务器错误！");
 			map.put("error_code", 2);
@@ -90,7 +92,7 @@ public class ProductController {
 			productMapper.deleteProduct(product);
 		}
 		map.put("msg", "产品批量删除成功！");
-		map.put("error_code", 0);
+		map.put("error_code", 1);
 		return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
 	}
 
@@ -101,14 +103,62 @@ public class ProductController {
 	public ResponseEntity<Map<String, Object>> product_put(@RequestBody Product product) {
 		Map<String, Object> map = new HashMap<String, Object>();
 		int i = productMapper.updateProduct(product);
-		product = productMapper.getProductByID(product);
 		if (i > 0) {
-			map.put("data", product);
 			map.put("msg", "产品修改成功！");
-			map.put("error_code", 0);
+			map.put("error_code", 1);
 		} else if (i == 0) {
 			map.put("msg", "产品修改失败！");
+			map.put("error_code", 0);
+		} else {
+			map.put("msg", "服务器错误！");
+			map.put("error_code", 2);
+		}
+		return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
+	}
+
+
+	@RequestMapping(value = "/product_putActivation", method = RequestMethod.PUT)
+	@Timed
+	@PreAuthorize("@InterfacePermissions.hasPermission(authentication, 'productmodule/api/product_putActivation--PUT')")
+	@ApiOperation(value = "修改产品激活状态", notes = "传入产品表参数，根据id修改产品激活状态", httpMethod = "PUT")
+	public ResponseEntity<Map<String, Object>> product_putActivation(@RequestBody Product product) {
+		Map<String, Object> map = new HashMap<String, Object>();
+		if (product.getProduct_status() == null) {
+			product.setProduct_status("1");
+		} else if (product.getProduct_status().equals("1")) {
+			product.setProduct_status("1");
+		} else if (product.getProduct_status().equals("0")) {
+			product.setProduct_status("0");
+		} else {
+			product.setProduct_status("1");
+		}
+		int i = productMapper.updateProductActivation(product);
+		if (i > 0) {
+			map.put("msg", "产品状态修改成功！");
 			map.put("error_code", 1);
+		} else if (i == 0) {
+			map.put("msg", "产品状态修改失败！");
+			map.put("error_code", 0);
+		} else {
+			map.put("msg", "服务器错误！");
+			map.put("error_code", 2);
+		}
+		return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
+	}
+	
+	@RequestMapping(value = "/product_putOrder", method = RequestMethod.PUT)
+	@Timed
+	@PreAuthorize("@InterfacePermissions.hasPermission(authentication, 'productmodule/api/product_putOrder--PUT')")
+	@ApiOperation(value = "修改产品显示位置", notes = "传入产品的order参数，根据id修改产品显示位置", httpMethod = "PUT")
+	public ResponseEntity<Map<String, Object>> product_putOrder(@RequestBody Product product) {
+		Map<String, Object> map = new HashMap<String, Object>();
+		int i = productMapper.updateProductOrder(product);
+		if (i > 0) {
+			map.put("msg", "产品显示位置修改成功！");
+			map.put("error_code", 1);
+		} else if (i == 0) {
+			map.put("msg", "产品显示位置修改失败！");
+			map.put("error_code", 0);
 		} else {
 			map.put("msg", "服务器错误！");
 			map.put("error_code", 2);
@@ -128,10 +178,10 @@ public class ProductController {
 		if (product.getProduct_name() != null && !product.getProduct_name().equals("")) {
 			map.put("data", product);
 			map.put("msg", "产品详情获取成功！");
-			map.put("error_code", 0);
+			map.put("error_code", 1);
 		} else if (product.getProduct_name() == null && product.getProduct_name().equals("")) {
 			map.put("msg", "产品详情获取失败或产品不存在！");
-			map.put("error_code", 1);
+			map.put("error_code", 0);
 		} else {
 			map.put("msg", "服务器错误！");
 			map.put("error_code", 2);
@@ -149,10 +199,32 @@ public class ProductController {
 		if (list.size() > 0) {
 			map.put("data", list);
 			map.put("msg", "所有产品详情获取成功！");
-			map.put("error_code", 0);
+			map.put("error_code", 1);
 		} else if (list.size() == 0) {
 			map.put("msg", "所有产品详情获取失败或产品为空！");
+			map.put("error_code", 0);
+		} else {
+			map.put("msg", "服务器错误！");
+			map.put("error_code", 2);
+		}
+		return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
+	}
+
+	@RequestMapping(value = "/getProductByLike", method = RequestMethod.GET)
+	@Timed
+	@PreAuthorize("@InterfacePermissions.hasPermission(authentication, 'productmodule/api/getProductByLike--GET')")
+	@ApiOperation(value = "模糊查询产品", notes = "根据名称模糊查询产品", httpMethod = "GET")
+	public ResponseEntity<Map<String, Object>> getProductByLike(@RequestParam("product_name") String product_name) {
+		Map<String, Object> map = new HashMap<String, Object>();
+		product_name = "%" + product_name.replace(" ", "") + "%";
+		List<Product> list = productMapper.getAllProductByLike(product_name);
+		if (list.size() > 0) {
+			map.put("data", list);
+			map.put("msg", "产品获取成功！");
 			map.put("error_code", 1);
+		} else if (list.size() <= 0) {
+			map.put("msg", "产品获取失败或产品不存在！");
+			map.put("error_code", 0);
 		} else {
 			map.put("msg", "服务器错误！");
 			map.put("error_code", 2);

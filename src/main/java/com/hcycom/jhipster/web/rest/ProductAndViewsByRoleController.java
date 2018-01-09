@@ -38,7 +38,7 @@ public class ProductAndViewsByRoleController {
 
 	@RequestMapping(value = "/getuser_ProductAndViews", method = RequestMethod.GET)
 	@Timed
-	@ApiOperation(value = "获取登录用户产品、视图", notes = "根据当前登录用户获取该用户拥有的产品和视图", httpMethod = "GET")
+	@ApiOperation(value = "获取登录用户产品、视图", notes = "根据当前登录用户获取该用户拥有的产品和视图,无权限控制", httpMethod = "GET")
 	public ResponseEntity<Map<String, Object>> getuser_ProductAndViews() {
 		Map<String, Object> map = new HashMap<String, Object>();
 		List<Product> products = new ArrayList<Product>();
@@ -62,6 +62,7 @@ public class ProductAndViewsByRoleController {
 		}
 		map.put("productsDate", products);
 		map.put("viewsDate", views);
+		map.put("error_code", 1);
 		return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
 	}
 

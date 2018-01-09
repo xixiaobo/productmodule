@@ -42,12 +42,13 @@ public class ViewsController {
 		views.setUuid(uuid);
 		int i=viewsMapper.addViews(views);
 		if(i>0){
+			viewsMapper.addViewsAuthority(views);
 			map.put("data", views);
 			map.put("msg", "视图添加成功！");
-			map.put("error_code", 0);
+			map.put("error_code", 1);
 		}else if(i==0){
 			map.put("msg", "视图添加失败！");
-			map.put("error_code", 1);
+			map.put("error_code", 0);
 		}else{
 			map.put("msg", "服务器错误！");
 			map.put("error_code", 2);
@@ -66,10 +67,10 @@ public class ViewsController {
 		int i=viewsMapper.deleteViews(views);
 		if(i>0){
 			map.put("msg", "视图删除成功！");
-			map.put("error_code", 0);
+			map.put("error_code", 1);
 		}else if(i==0){
 			map.put("msg", "视图删除失败！");
-			map.put("error_code", 1);
+			map.put("error_code", 0);
 		}else{
 			map.put("msg", "服务器错误！");
 			map.put("error_code", 2);
@@ -90,7 +91,7 @@ public class ViewsController {
 			viewsMapper.deleteViews(views);
 		}
 		map.put("msg", "视图批量删除成功！");
-		map.put("error_code", 0);
+		map.put("error_code", 1);
 		return new ResponseEntity<Map<String,Object>>(map, HttpStatus.OK);
 	}
 	
@@ -101,14 +102,32 @@ public class ViewsController {
 	public ResponseEntity<Map<String, Object>> views_put(@RequestBody Views views) {
 		Map<String, Object> map=new HashMap<String, Object>();
 		int i=viewsMapper.updateViews(views);
-		views=viewsMapper.getViewsByID(views);
 		if(i>0){
-			map.put("data", views);
 			map.put("msg", "视图修改成功！");
-			map.put("error_code", 0);
+			map.put("error_code", 1);
 		}else if(i==0){
 			map.put("msg", "视图修改失败！");
+			map.put("error_code", 0);
+		}else{
+			map.put("msg", "服务器错误！");
+			map.put("error_code", 2);
+		}
+		return new ResponseEntity<Map<String,Object>>(map, HttpStatus.OK);
+	}
+	
+	@RequestMapping(value = "/views_putOrder", method = RequestMethod.PUT)
+	@Timed
+	@PreAuthorize("@InterfacePermissions.hasPermission(authentication, 'productmodule/api/views_putOrder--PUT')")
+	@ApiOperation(value = "修改视图显示位置", notes = "传入视图的order参数，根据id修改视图显示位置", httpMethod = "PUT")
+	public ResponseEntity<Map<String, Object>> views_putOrder(@RequestBody Views views) {
+		Map<String, Object> map=new HashMap<String, Object>();
+		int i=viewsMapper.updateViewsOrder(views);
+		if(i>0){
+			map.put("msg", "视图显示位置修改成功！");
 			map.put("error_code", 1);
+		}else if(i==0){
+			map.put("msg", "视图显示位置修改失败！");
+			map.put("error_code", 0);
 		}else{
 			map.put("msg", "服务器错误！");
 			map.put("error_code", 2);
@@ -128,10 +147,10 @@ public class ViewsController {
 		if(views.getViews_name_cn()!=null&&!views.getViews_name_cn().equals("")){
 			map.put("data", views);
 			map.put("msg", "视图详情获取成功！");
-			map.put("error_code", 0);
+			map.put("error_code", 1);
 		}else if(views.getViews_name_cn()==null&&views.getViews_name_cn().equals("")){
 			map.put("msg", "视图详情获取失败或产品不存在！");
-			map.put("error_code", 1);
+			map.put("error_code", 0);
 		}else{
 			map.put("msg", "服务器错误！");
 			map.put("error_code", 2);
@@ -149,10 +168,10 @@ public class ViewsController {
 		if(list.size()>0){
 			map.put("data", list);
 			map.put("msg", "所有视图详情获取成功！");
-			map.put("error_code", 0);
+			map.put("error_code", 1);
 		}else if(list.size()==0){
 			map.put("msg", "所有视图详情获取失败或产品为空！");
-			map.put("error_code", 1);
+			map.put("error_code", 0);
 		}else{
 			map.put("msg", "服务器错误！");
 			map.put("error_code", 2);

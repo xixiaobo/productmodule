@@ -7,6 +7,7 @@ public class Views {
 	private String views_super;
 	private String views_icon;
 	private String views_level;
+	private int views_order;
 	public String getUuid() {
 		return uuid;
 	}
@@ -43,10 +44,18 @@ public class Views {
 	public void setViews_level(String views_level) {
 		this.views_level = views_level;
 	}
+	
+	public int getViews_order() {
+		return views_order;
+	}
+	public void setViews_order(int views_order) {
+		this.views_order = views_order;
+	}
 	@Override
 	public String toString() {
 		return "Views [uuid=" + uuid + ", views_name_cn=" + views_name_cn + ", views_name_en=" + views_name_en
-				+ ", views_super=" + views_super + ", views_icon=" + views_icon + ", views_level=" + views_level + "]";
+				+ ", views_super=" + views_super + ", views_icon=" + views_icon + ", views_level=" + views_level
+				+ ", views_order=" + views_order + "]";
 	}
 	
 

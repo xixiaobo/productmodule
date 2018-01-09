@@ -6,6 +6,7 @@ public class Product {
 	private String product_desc;
 	private String product_status;
 	private String product_icon;
+	private int product_order;
 	public String getUuid() {
 		return uuid;
 	}
@@ -36,10 +37,18 @@ public class Product {
 	public void setProduct_icon(String product_icon) {
 		this.product_icon = product_icon;
 	}
+	
+	public int getProduct_order() {
+		return product_order;
+	}
+	public void setProduct_order(int product_order) {
+		this.product_order = product_order;
+	}
 	@Override
 	public String toString() {
 		return "Product [uuid=" + uuid + ", product_name=" + product_name + ", product_desc=" + product_desc
-				+ ", product_status=" + product_status + ", product_icon=" + product_icon + "]";
+				+ ", product_status=" + product_status + ", product_icon=" + product_icon + ", product_order="
+				+ product_order + "]";
 	}
 	
 	
