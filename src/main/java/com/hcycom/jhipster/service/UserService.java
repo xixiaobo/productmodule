@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import com.hcycom.jhipster.client.AuthorizedFeignClient;
 
 
-
 @AuthorizedFeignClient(name = "jhipsteruaa")
 public interface UserService {
 	

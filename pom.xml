@@ -15,7 +15,6 @@
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>war</packaging>
 	<name>Productmodule</name>
-
 	<properties>
 		<argLine>-Djava.security.egd=file:/dev/./urandom -Xmx256m</argLine>
 		<assertj.version>3.6.2</assertj.version>
